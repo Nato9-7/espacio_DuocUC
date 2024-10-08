@@ -1,0 +1,7 @@
+{
+  "name": "espaciosDuocUC",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
