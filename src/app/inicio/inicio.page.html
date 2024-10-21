@@ -9,14 +9,25 @@
 
   <ion-title class="ion-margin-top">Tus Reservas</ion-title>
 
-  <ion-card class="ion-margin-top">
-    <ion-card-header>
-      <ion-card-title>Reserva sala estudio 01</ion-card-title>
-    </ion-card-header>
-    <ion-card-content>
-      <p><strong>Hora de Reserva:</strong> 10:00 AM</p>
-      <p><strong>Reservado por:</strong> Juan Pérez</p>
-      <ion-button expand="full" color="danger">Cancelar Reserva</ion-button>
-    </ion-card-content>
-  </ion-card>
+   <!-- Lista de reservas -->
+   <ion-list *ngIf="reservas.length > 0; else noReservas">    
+    <ion-item *ngFor="let reserva of reservas">        
+      <ion-label>            
+        <h2>Reserva Nro: {{ reserva.Id_reserva }}</h2>            
+        <p>Fecha: {{ reserva.Fecha_reserva | date:'yyyy-MM-dd' }}</p>            
+        <p>Estado: {{ reserva.estado_reserva }}</p>        
+      </ion-label>        
+      <ion-button  slot="end" color="success">
+        <ion-icon name="checkmark-circle" color="light"></ion-icon>
+      </ion-button>
+      <ion-button slot="end" color="danger">            
+        <ion-icon name="trash"></ion-icon>        
+      </ion-button>    
+    </ion-item>  
+  </ion-list>
+
+  <ng-template #noReservas>
+    <p>No hay reservas pendientes.</p>
+  </ng-template>
+  
 </ion-content>

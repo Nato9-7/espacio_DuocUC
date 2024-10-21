@@ -13,21 +13,7 @@ export class ReservasPage implements OnInit {
   constructor(private http: HttpClient,) { }
 
   ngOnInit() {
-    this.obtenerReservas();
   }
 
-  obtenerReservas(){
-    const userId = localStorage.getItem('userId');
-    
-    this.http.get(`http://localhost:3000/reserva/${userId}`).subscribe(
-      (response: any) => {
-        console.log('Reservas del usuario:', response);
-        this.reservas = response;
-      },
-      (error) => {
-        console.error(error);
-        alert('Error al obtener las reservas');
-      }
-    );
-  }
+ 
 }
