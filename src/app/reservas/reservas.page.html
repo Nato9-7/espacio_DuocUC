@@ -1,0 +1,31 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Reservas</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Reservas</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <!-- Lista de reservas -->
+  <ion-list *ngIf="reservas.length > 0; else noReservas">
+    <ion-item *ngFor="let reserva of reservas">
+      <ion-label>
+        <h2>Reserva Nro: {{ reserva.Id_reserva }}</h2>
+        <p>Fecha: {{ reserva.Fecha_reserva | date:'yyyy-MM-dd' }}</p>
+        <p>Estado: {{ reserva.estado_reserva }}</p>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+
+  <!-- Mostrar un mensaje si no hay reservas -->
+  <ng-template #noReservas>
+    <ion-item>
+      <ion-label>No tienes reservas</ion-label>
+    </ion-item>
+  </ng-template>
+</ion-content>

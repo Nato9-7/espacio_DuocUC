@@ -17,7 +17,7 @@ export class LoginPage {
     private navCtrl: NavController
   ) {
     this.loginForm = this.fb.group({
-      correo: ['', [Validators.required, Validators.email]], // Cambia "email" a "correo"
+      correo: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
     });
     
@@ -36,6 +36,7 @@ export class LoginPage {
       this.http.post('http://localhost:3000/login', dataToSend).subscribe(
         (response: any) => {
           if (response.message === 'Login exitoso') {
+            localStorage.setItem('userId', response.userId);
             this.navCtrl.navigateRoot('/home');
           } else {
             alert('Correo o contraseña incorrectos');
