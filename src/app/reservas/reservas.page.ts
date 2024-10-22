@@ -2,18 +2,18 @@ import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-inicio',
-  templateUrl: './inicio.page.html',
-  styleUrls: ['./inicio.page.scss'],
+  selector: 'app-reservas',
+  templateUrl: './reservas.page.html',
+  styleUrls: ['./reservas.page.scss'],
 })
-export class InicioPage implements OnInit {
+export class ReservasPage implements OnInit {
 
   reservas: any[] = [];
   nuevaReserva = {
+    sala: '',
     fecha: '',
     horaInicio: '',
     horaFin: '',
-    sala: '',
     userId: ''
   };
 
@@ -28,8 +28,7 @@ export class InicioPage implements OnInit {
     
     this.http.get(`http://localhost:3000/reserva/${userId}`).subscribe(
       (response: any) => {
-        console.log('Reservas del usuario:', response);
-        this.reservas = response.filter((reserva: any) => reserva.estado_reserva === 'pendiente');
+        this.reservas = response; // Asigna las reservas del usuario
       },
       (error) => {
         console.error(error);
@@ -39,14 +38,23 @@ export class InicioPage implements OnInit {
   }
 
   crearReserva() {
-    const userId = localStorage.getItem('userId') || ''; // Asigna una cadena vacía si es null
-    this.nuevaReserva.userId = userId; // Asigna el userId a la nueva reserva
-  
+    const userId = localStorage.getItem('userId');
+    
+    if (!userId) {
+      alert('No se ha encontrado el usuario. Por favor, inicia sesión.');
+      return;
+    }
+
+    // Asigna el userId a la nueva reserva
+    this.nuevaReserva.userId = userId; 
+
+    // Enviar la nueva reserva al servidor
     this.http.post('http://localhost:3000/reserva', this.nuevaReserva).subscribe(
       (response) => {
         console.log('Reserva creada:', response);
         this.obtenerReservas(); // Actualiza la lista de reservas
-        this.nuevaReserva = { fecha: '', horaInicio: '', horaFin: '', sala: '', userId: '' }; // Reinicia el formulario
+        // Reinicia el formulario
+        this.nuevaReserva = { sala: '', fecha: '', horaInicio: '', horaFin: '', userId: '' };
       },
       (error) => {
         console.error(error);
@@ -54,5 +62,4 @@ export class InicioPage implements OnInit {
       }
     );
   }
-  
 }

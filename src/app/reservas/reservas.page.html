@@ -1,0 +1,56 @@
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Reservas</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <!-- Formulario para crear una nueva reserva -->
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Crear Nueva Reserva</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-item>
+        <ion-label position="stacked">Sala</ion-label>
+        <ion-input [(ngModel)]="nuevaReserva.sala" placeholder="Ingrese el nombre de la sala"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Fecha</ion-label>
+        <ion-input type="date" [(ngModel)]="nuevaReserva.fecha"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Hora de Inicio</ion-label>
+        <ion-input type="time" [(ngModel)]="nuevaReserva.horaInicio"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Hora de Fin</ion-label>
+        <ion-input type="time" [(ngModel)]="nuevaReserva.horaFin"></ion-input>
+      </ion-item>
+
+      <ion-button expand="full" (click)="crearReserva()">Hacer Reserva</ion-button>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-title class="ion-margin-top">Tus Reservas</ion-title>
+
+  <!-- Lista de reservas -->
+  <ion-list *ngIf="reservas.length > 0; else noReservas">    
+    <ion-item *ngFor="let reserva of reservas">        
+      <ion-label>            
+        <h2>Reserva Nro: {{ reserva.Id_reserva }}</h2>            
+        <p>Fecha: {{ reserva.Fecha_reserva | date:'yyyy-MM-dd' }}</p>            
+        <p>Estado: {{ reserva.estado_reserva }}</p>        
+      </ion-label>        
+    </ion-item>  
+  </ion-list>
+
+  <ng-template #noReservas>
+    <p>No hay reservas.</p>
+  </ng-template>
+  
+</ion-content>
