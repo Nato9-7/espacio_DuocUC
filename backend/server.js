@@ -5,7 +5,7 @@ const app = express();
 
 app.use(cors({
   origin: 'http://localhost:8100', 
-  methods: ['GET', 'POST'],
+  methods: ['GET', 'POST', 'DELETE', 'PUT'],
   allowedHeaders: ['Content-Type']
 }));
 
@@ -82,14 +82,52 @@ app.get('/reserva/:usuario', (req, res) => {
       console.log('Reservas encontradas:', result);
       res.status(200).json(result); // Envía las reservas como respuesta
     } else {
-      console.log('No existen reservas para este usuario');
-      res.status(404).send({ message: 'No existen reservas para este usuario' });
     }
   });
 });
 
+// Ruta para cancelar (eliminar) una reserva
+app.delete('/reserva/:id', (req, res) => {
+  const reservaId = req.params.id;
 
+  const query = 'DELETE FROM RESERVA WHERE Id_reserva = ?';
+  
+  db.query(query, [reservaId], (err, result) => {
+    if (err) {
+      console.error('Error al eliminar la reserva:', err);
+      return res.status(500).send({ error: 'Error al eliminar la reserva' });
+    }
 
+    if (result.affectedRows > 0) {
+      console.log('Reserva eliminada exitosamente');
+      res.status(200).send({ message: 'Reserva eliminada exitosamente' });
+    } else {
+      console.log('No se encontró la reserva');
+      res.status(404).send({ message: 'Reserva no encontrada' });
+    }
+  });
+});
+
+// Ruta para confirmar una reserva (actualizar estado a 'confirmada')
+app.put('/reserva/confirmar/:id', (req, res) => {
+  const reservaId = req.params.id;  // Obtener el ID de la reserva de los params
+
+  const query = "UPDATE RESERVA SET estado_reserva = 'confirmada' WHERE Id_reserva = ?";
+
+  db.query(query, [reservaId], (err, result) => {
+    if (err) {
+      console.error('Error al actualizar la reserva:', err);
+      return res.status(500).send({ error: 'Error en el servidor' });
+    }
+
+    if (result.affectedRows > 0) {
+      console.log('Reserva confirmada:', result);
+      res.status(200).send({ message: 'Reserva confirmada exitosamente' });
+    } else {
+      res.status(404).send({ message: 'Reserva no encontrada' });
+    }
+  });
+});
 
 // Iniciar el servidor
 app.listen(3000, () => {
