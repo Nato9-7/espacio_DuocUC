@@ -1,9 +1,5 @@
 const express = require('express');
 const router = express.Router();
-const usuarioController = require('../controlador/controladorUsuario');
+const db = require('../config/db'); // Asegúrate de tener tu conexión a la base de datos aquí
 
-// Aquí tus rutas para los usuarios
-// Ejemplo:
-router.get('/', usuarioController.obtenerUsuarios);
-
-module.exports = router;  // Exporta el router correctamente
+module.exports = router;

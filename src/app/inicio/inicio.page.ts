@@ -16,22 +16,26 @@ export class InicioPage implements OnInit {
     this.obtenerReservas();
   }
   
-  obtenerReservas(){
+  obtenerReservas() {
     const userId = localStorage.getItem('userId');
-    
-    this.http.get(`http://localhost:3000/reserva/${userId}`).subscribe(
-      (response: any) => {
-        console.log('Reservas del usuario:', response);
-        this.reservas = response.filter((reserva: any) => reserva.estado_reserva === 'PENDIENTE');
-        
-      },
-      (error) => {
-        console.error(error);
-        alert('Error al obtener las reservas');
-      }
-    );
-  }
 
+      this.http.get(`http://localhost:3000/reserva/${userId}`).subscribe(
+        (response: any) => {
+          console.log('Reservas del usuario:', response);
+          this.reservas = response.filter((reserva: any) => reserva.estado_reserva === 1);
+        },
+        (error) => {
+          console.error('Error al obtener reservas:', error);
+          if (error.status === 404) {
+            console.log("no existen reservas")
+          } else {
+            alert('Error en el servidor.');
+          }
+        }
+      );
+    
+  }
+  
   cancelarReserva(reservaId: number){
     if (confirm('¿Estás seguro de que deseas cancelar esta reserva?')) {
       this.http.delete(`http://localhost:3000/reserva/${reservaId}`).subscribe(
