@@ -37,7 +37,7 @@ export class LoginPage {
         (response: any) => {
           if (response.message === 'Login exitoso') {
             localStorage.setItem('userId', response.userId);
-            this.navCtrl.navigateRoot('/home');
+            this.navCtrl.navigateRoot('/inicio');
           } else {
             alert('Correo o contraseña incorrectos');
           }
