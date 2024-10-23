@@ -54,5 +54,20 @@ export class InicioPage implements OnInit {
       }
     );
   }
+
+  cancelarReserva(reservaId: number){
+    if (confirm('¿Estás seguro de que deseas cancelar esta reserva?')) {
+      this.http.delete(`http://localhost:3000/reserva/${reservaId}`).subscribe(
+        (response: any) => {
+          console.log('Reserva cancelada:', response);
+          this.obtenerReservas();  // Refresca la lista de reservas
+        },
+        (error) => {
+          console.error('Error al cancelar la reserva:', error);
+          alert('Error al cancelar la reserva');
+        }
+      );
+    }
+  }
   
 }

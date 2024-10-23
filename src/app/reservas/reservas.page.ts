@@ -9,13 +9,8 @@ import { Component, OnInit } from '@angular/core';
 export class ReservasPage implements OnInit {
 
   reservas: any[] = [];
-  nuevaReserva = {
-    sala: '',
-    fecha: '',
-    horaInicio: '',
-    horaFin: '',
-    userId: ''
-  };
+  
+  nuevaReserva = { sala: '', fecha: '', userId: '' };
 
   constructor(private http: HttpClient) { }
 
@@ -38,7 +33,7 @@ export class ReservasPage implements OnInit {
   }
 
   crearReserva() {
-    const userId = localStorage.getItem('userId');
+    const userId = localStorage.getItem('userId');  // Obtiene el ID del usuario desde localStorage
     
     if (!userId) {
       alert('No se ha encontrado el usuario. Por favor, inicia sesión.');
@@ -50,16 +45,17 @@ export class ReservasPage implements OnInit {
 
     // Enviar la nueva reserva al servidor
     this.http.post('http://localhost:3000/reserva', this.nuevaReserva).subscribe(
-      (response) => {
+      (response: any) => {
         console.log('Reserva creada:', response);
-        this.obtenerReservas(); // Actualiza la lista de reservas
+        this.obtenerReservas();  // Actualiza la lista de reservas si tienes esa función
         // Reinicia el formulario
-        this.nuevaReserva = { sala: '', fecha: '', horaInicio: '', horaFin: '', userId: '' };
+        this.nuevaReserva = { sala: '', fecha: '', userId: '' };
       },
       (error) => {
-        console.error(error);
+        console.error('Error al crear la reserva:', error);
         alert('Error al crear la reserva');
       }
     );
   }
+
 }

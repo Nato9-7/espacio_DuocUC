@@ -5,7 +5,7 @@ const app = express();
 
 app.use(cors({
   origin: 'http://localhost:8100', 
-  methods: ['GET', 'POST'],
+  methods: ['GET', 'POST', 'DELETE'],
   allowedHeaders: ['Content-Type']
 }));
 
@@ -88,6 +88,48 @@ app.get('/reserva/:usuario', (req, res) => {
   });
 });
 
+// Ruta para crear una nueva reserva
+app.post('/reserva', (req, res) => {
+  const { sala, fecha, userId } = req.body;
+
+  // Inserta la nueva reserva en la base de datos con los valores que manejarás manualmente
+  const query = "INSERT INTO RESERVA (Fecha_reserva, estado_reserva, Id_usuario, horario_id_horario, id_sala) VALUES (?, 'pendiente', ?, ?, 1)";
+  
+  // Aquí, horaInicio y horaFin pueden ser asignados manualmente en el query
+  const horarioId = sala === 'biblioteca' ? 1 : 2; // Asigna manualmente según el tipo de sala
+
+  db.query(query, [fecha, userId, horarioId], (err, result) => {
+    if (err) {
+      console.error('Error al insertar la reserva:', err);
+      return res.status(500).send({ error: 'Error al crear la reserva' });
+    }
+
+    console.log('Reserva creada:', result);
+    res.status(200).send({ message: 'Reserva creada exitosamente' });
+  });
+});
+
+// Ruta para cancelar (eliminar) una reserva
+app.delete('/reserva/:id', (req, res) => {
+  const reservaId = req.params.id;
+
+  const query = 'DELETE FROM RESERVA WHERE Id_reserva = ?';
+  
+  db.query(query, [reservaId], (err, result) => {
+    if (err) {
+      console.error('Error al eliminar la reserva:', err);
+      return res.status(500).send({ error: 'Error al eliminar la reserva' });
+    }
+
+    if (result.affectedRows > 0) {
+      console.log('Reserva eliminada exitosamente');
+      res.status(200).send({ message: 'Reserva eliminada exitosamente' });
+    } else {
+      console.log('No se encontró la reserva');
+      res.status(404).send({ message: 'Reserva no encontrada' });
+    }
+  });
+});
 
 
 

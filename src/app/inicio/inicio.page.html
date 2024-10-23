@@ -11,10 +11,6 @@
 
   <ion-title class="ion-margin-top">Tus Reservas</ion-title>
 
-
-  <ion-card-title>Crear Nueva Reserva</ion-card-title>
-
-
   <ion-list *ngIf="reservas.length > 0; else noReservas">    
     <ion-item *ngFor="let reserva of reservas">        
       <ion-label>            
@@ -25,7 +21,7 @@
       <ion-button slot="end" color="success">
         <ion-icon name="checkmark-circle" color="light"></ion-icon>
       </ion-button>
-      <ion-button slot="end" color="danger">            
+      <ion-button slot="end" color="danger" (click)="cancelarReserva(reserva.Id_reserva)">            
         <ion-icon name="trash"></ion-icon>        
       </ion-button>    
     </ion-item>  
