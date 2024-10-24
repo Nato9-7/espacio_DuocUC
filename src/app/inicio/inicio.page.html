@@ -9,7 +9,6 @@
 
   <ion-title class="ion-margin-top">Tus Reservas</ion-title>
 
-   <!-- Lista de reservas -->
    <ion-list *ngIf="reservas.length > 0; else noReservas">    
     <ion-item *ngFor="let reserva of reservas">        
       <ion-label>            
@@ -25,6 +24,8 @@
       </ion-button>    
     </ion-item>  
   </ion-list>
+
+
 
   <ng-template #noReservas>
     <p>No hay reservas pendientes.</p>

@@ -7,23 +7,21 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./inicio.page.scss'],
 })
 export class InicioPage implements OnInit {
+  reservas: any[] = [];
 
-  reservas : any[] = [];
-
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   ngOnInit() {
     this.obtenerReservas();
   }
-  
-  obtenerReservas(){
+
+  obtenerReservas() {
     const userId = localStorage.getItem('userId');
-    
+
     this.http.get(`http://localhost:3000/reserva/${userId}`).subscribe(
       (response: any) => {
         console.log('Reservas del usuario:', response);
         this.reservas = response.filter((reserva: any) => reserva.estado_reserva === 'PENDIENTE');
-        
       },
       (error) => {
         console.error(error);
@@ -32,7 +30,7 @@ export class InicioPage implements OnInit {
     );
   }
 
-  cancelarReserva(reservaId: number){
+  cancelarReserva(reservaId: number) {
     if (confirm('¿Estás seguro de que deseas cancelar esta reserva?')) {
       this.http.delete(`http://localhost:3000/reserva/${reservaId}`).subscribe(
         (response: any) => {
@@ -61,4 +59,24 @@ export class InicioPage implements OnInit {
     );
   }
 
+  crearReserva(nuevaReserva: any) {
+    const userId = localStorage.getItem('userId');
+    const reservaData = {
+      fecha: new Date().toISOString().split('T')[0], // Obtiene la fecha actual en formato YYYY-MM-DD
+      userId: userId,
+      horario: nuevaReserva.horario,
+      sala: nuevaReserva.sala
+    };
+
+    this.http.post(`http://localhost:3000/reserva`, reservaData).subscribe(
+      (response: any) => {
+        console.log('Reserva creada:', response);
+        this.obtenerReservas();  // Refresca la lista de reservas
+      },
+      (error) => {
+        console.error('Error al crear la reserva:', error);
+        alert('Error al crear la reserva');
+      }
+    );
+  }
 }

@@ -11,9 +11,41 @@
     </ion-toolbar>
   </ion-header>
 
-  <ion-button expand="block" shape="round">
+  <ion-button expand="block" shape="round" (click)="mostrarFormulario = !mostrarFormulario">
     Hacer reserva
   </ion-button>
 
- 
+  <div *ngIf="mostrarFormulario">
+    <form (ngSubmit)="crearReserva(reservaForm.value)" #reservaForm="ngForm">
+      <ion-item>
+        <ion-label position="stacked">Fecha de Reserva</ion-label>
+        <ion-input type="date" name="fecha" ngModel required></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Horario de Inicio</ion-label>
+        <ion-select name="horarioInicio" ngModel required>
+          <ion-select-option value="08:30">08:30 AM</ion-select-option>
+          <ion-select-option value="09:50">09:50 AM</ion-select-option>
+          <ion-select-option value="11:10">11:10 AM</ion-select-option>
+          <ion-select-option value="12:30">12:30 PM</ion-select-option>
+          <ion-select-option value="13:50">01:50 PM</ion-select-option>
+          <ion-select-option value="15:10">03:10 PM</ion-select-option>
+          <ion-select-option value="16:30">04:30 PM</ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Sala</ion-label>
+        <ion-select name="sala" ngModel required>
+          <ion-select-option value="">Seleccionar sala</ion-select-option>
+          <ion-select-option value="1">Sala 1</ion-select-option>
+          <ion-select-option value="2">Sala 2</ion-select-option>
+          <ion-select-option value="3">Sala 3</ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <ion-button expand="full" type="submit">Crear Reserva</ion-button>
+    </form>
+  </div>
 </ion-content>
