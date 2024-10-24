@@ -18,21 +18,19 @@ export class LoginPage {
   ) {
     this.loginForm = this.fb.group({
       correo: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6)]],
+      password: ['', [Validators.required, Validators.minLength(4)]],
     });
-    
-    
   }
 
   onLogin() {
     if (this.loginForm.valid) {
       const loginData = this.loginForm.value;
-  
+
       const dataToSend = {
         correo: loginData.correo,
         password: loginData.password,
       };
-  
+
       this.http.post('http://localhost:3000/login', dataToSend).subscribe(
         (response: any) => {
           if (response.message === 'Login exitoso') {
@@ -49,5 +47,4 @@ export class LoginPage {
       );
     }
   }
-  
 }
