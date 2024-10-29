@@ -17,9 +17,9 @@ const Reserva = {
     db.query(query, [reservaData.fecha, reservaData.userId, reservaData.horario, reservaData.sala], callback);
   },
   cancelar: (idReserva, callback) => {
-    const query = 'DELETE FROM RESERVA WHERE Id_reserva = ?';
+    const query = 'UPDATE RESERVA SET estado_reserva = 3 WHERE Id_reserva = ?';
     db.query(query, [idReserva], callback);
-  },
+  },  
   confirmar: (idReserva, callback) => {
     const query = 'UPDATE RESERVA SET estado_reserva = 2 WHERE Id_reserva = ?';
     db.query(query, [idReserva], callback);

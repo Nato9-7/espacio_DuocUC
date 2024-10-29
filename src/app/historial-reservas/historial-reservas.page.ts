@@ -26,7 +26,7 @@ export class HistorialReservasPage implements OnInit {
     this.http.get(`http://localhost:3000/reserva/${userId}?page=${this.page}&limit=${this.limit}`).subscribe(
       (response: any) => {
         console.log('Reservas del usuario:', response);
-        const nuevasReservas = response.filter((reserva: any) => reserva.estado_reserva === 2);
+        const nuevasReservas = response.filter((reserva: any) => reserva.estado_reserva === 2 || reserva.estado_reserva === 3);
         this.reservas = [...this.reservas, ...nuevasReservas];
         
         if (event) {

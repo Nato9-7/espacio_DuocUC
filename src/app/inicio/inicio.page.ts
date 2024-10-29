@@ -36,9 +36,9 @@ export class InicioPage implements OnInit {
     
   }
   
-  cancelarReserva(reservaId: number){
+  cancelarReserva(reservaId: number) {
     if (confirm('¿Estás seguro de que deseas cancelar esta reserva?')) {
-      this.http.delete(`http://localhost:3000/reserva/${reservaId}`).subscribe(
+      this.http.put(`http://localhost:3000/reserva/${reservaId}`, { estado_reserva: 3 }).subscribe(
         (response: any) => {
           console.log('Reserva cancelada:', response);
         },
@@ -49,6 +49,7 @@ export class InicioPage implements OnInit {
       );
     }
   }
+  
 
   confirmarReserva(reservaId: number) {
     this.http.put(`http://localhost:3000/reserva/confirmar/${reservaId}`, {}).subscribe(
