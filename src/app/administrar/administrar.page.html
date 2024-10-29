@@ -39,7 +39,7 @@
           <p>Fecha: {{ penalizacion.fecha | date:'yyyy-MM-dd' }}</p>            
           <p>Estado: {{ penalizacion.descripcion }}</p>        
         </ion-label>        
-        <ion-button slot="end" color="danger" (click)="eliminarPenalizacion(penalizacion.IdPenalizacion)">            
+        <ion-button slot="end" color="danger" (click)="eliminarPenalizacion()">            
           <ion-icon name="trash"></ion-icon>        
         </ion-button>  
       </ion-item>  

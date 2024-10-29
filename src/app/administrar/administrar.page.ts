@@ -10,6 +10,7 @@ export class AdministrarPage implements OnInit {
 
   nombreUsuario: string | null = null;
   penalizaciones: any[] = [];
+  userId!: number ;
   
   constructor(private http: HttpClient) { }
 
@@ -47,6 +48,10 @@ export class AdministrarPage implements OnInit {
         this.nombreUsuario = null;
       }
     );
+  }
+
+  eliminarPenalizacion(){
+    
   }
 
 }
