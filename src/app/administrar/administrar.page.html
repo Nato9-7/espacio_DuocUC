@@ -27,6 +27,9 @@
         <p>Nombre: {{ nombreUsuario }}</p>
       </ion-card-content>
     </ion-card>
+    <ion-button *ngIf="nombreUsuario" expand="full" routerLink="/penalizacion" color="secondary">
+      Ir a Penalizacion
+    </ion-button>
   
     <ng-template #noUsuarios>
       <p>No hay usuarios disponibles.</p>

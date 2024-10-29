@@ -22,6 +22,10 @@ const routes: Routes = [
     path: 'administrar',
     loadChildren: () => import('./administrar/administrar.module').then( m => m.AdministrarPageModule)
   },
+  {
+    path: 'penalizacion',
+    loadChildren: () => import('./penalizacion/penalizacion.module').then( m => m.PenalizacionPageModule)
+  },
 
 
 

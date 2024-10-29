@@ -39,6 +39,7 @@ export class AdministrarPage implements OnInit {
       (response: any) => {
         console.log('Usuario encontrado:', response);
         this.nombreUsuario = response.nombre;
+        localStorage.setItem('id_Usuario', userId.toString());
         this.obtenerPenalizaciones(userId)
       },
       (error) => {

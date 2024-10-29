@@ -24,7 +24,7 @@ app.post('/login', (req, res) => {
   console.log('Datos recibidos:', req.body);
   const { correo, password } = req.body;
 
-  const query = "SELECT * FROM usuario WHERE correo = ? AND contrasena = ?";
+  const query = "SELECT * FROM usuario WHERE correo = ? AND contras-ena = ?";
   db.query(query, [correo, password], (err, result) => {
     if (err) {
       console.error('Error en la consulta:', err);

@@ -22,4 +22,4 @@ const Penalizacion = {
   },
 };
 
-module.exports = Reserva;
+module.exports = Penalizacion;
