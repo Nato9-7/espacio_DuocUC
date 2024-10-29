@@ -41,7 +41,6 @@ export class InicioPage implements OnInit {
       this.http.delete(`http://localhost:3000/reserva/${reservaId}`).subscribe(
         (response: any) => {
           console.log('Reserva cancelada:', response);
-          this.obtenerReservas();  // Refresca la lista de reservas
         },
         (error) => {
           console.error('Error al cancelar la reserva:', error);

@@ -1,0 +1,48 @@
+<ion-content class="ion-padding">
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title class="ion-text-center">
+        <ion-text color="primary">
+          <h1>
+            <ion-icon name="calendar" class="ion-margin-end"></ion-icon>
+            Historial de Reservas
+          </h1>
+        </ion-text>
+      </ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+      <ion-list>
+        <ion-item-group>
+          <ion-item-divider sticky color="light">
+            <ion-label>
+              <h2>Reservas Recientes</h2>
+            </ion-label>
+          </ion-item-divider>
+
+          <ion-item *ngFor="let reserva of reservas" lines="full" >
+            <ion-label>
+              <h2>Reserva Nro: {{ reserva.Id_reserva }}</h2>
+              <ion-text color="medium">
+                <p>
+                  <ion-icon name="calendar-outline" class="ion-margin-end"></ion-icon>
+                  {{ reserva.fecha_reserva | date:'dd MMM yyyy' }}
+                </p>
+              </ion-text>
+            </ion-label>
+            <ion-badge [color]="reserva.estado_reserva === 2 ? 'success' : 'warning'" slot="end">
+              <p> {{ reserva.estado_reserva === 2 ? 'Confirmada' : 'Pendiente' }}</p>
+            </ion-badge>
+          </ion-item>
+        </ion-item-group>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-infinite-scroll threshold="100px" (ionInfinite)="loadData($event)">
+    <ion-infinite-scroll-content
+      loadingSpinner="bubbles"
+      loadingText="Cargando más reservas...">
+    </ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+</ion-content>
