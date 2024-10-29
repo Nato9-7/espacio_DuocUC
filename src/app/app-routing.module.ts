@@ -18,9 +18,10 @@ const routes: Routes = [
   {
     path: 'reservas',
     loadChildren: () => import('./reservas/reservas.module').then( m => m.ReservasPageModule)
-  },  {
-    path: 'historial-reservas',
-    loadChildren: () => import('./historial-reservas/historial-reservas.module').then( m => m.HistorialReservasPageModule)
+  },
+  {
+    path: 'administrar',
+    loadChildren: () => import('./administrar/administrar.module').then( m => m.AdministrarPageModule)
   },
 
 

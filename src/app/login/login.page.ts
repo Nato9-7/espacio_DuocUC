@@ -34,8 +34,13 @@ export class LoginPage {
       this.http.post('http://localhost:3000/login', dataToSend).subscribe(
         (response: any) => {
           if (response.message === 'Login exitoso') {
-            localStorage.setItem('userId', response.userId);
-            this.navCtrl.navigateRoot('/inicio');
+            
+            if (response.Admin) {
+              this.navCtrl.navigateRoot('/administrar');
+            } else {
+              this.navCtrl.navigateRoot('/inicio');
+            }
+            
           } else {
             alert('Correo o contraseña incorrectos');
           }

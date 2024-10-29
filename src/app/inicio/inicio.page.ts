@@ -9,13 +9,13 @@ import { Component, OnInit } from '@angular/core';
 export class InicioPage implements OnInit {
 
   reservas : any[] = [];
-
+  esAdmin : boolean = false;
   constructor(private http: HttpClient) { }
 
   ngOnInit() {
     this.obtenerReservas();
   }
-  
+
   obtenerReservas() {
     const userId = localStorage.getItem('userId');
 
