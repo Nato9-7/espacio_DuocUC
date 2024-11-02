@@ -34,6 +34,8 @@ export class LoginPage {
       this.http.post('http://localhost:3000/login', dataToSend).subscribe(
         (response: any) => {
           if (response.message === 'Login exitoso') {
+            localStorage.setItem('userId', response.userId);
+            console.log("este es el usuario", localStorage.getItem('userId'));
             
             if (response.Admin) {
               this.navCtrl.navigateRoot('/administrar');
