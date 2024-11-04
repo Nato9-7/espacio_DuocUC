@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
+import { InicioPage } from './inicio/inicio.page';
 
 const routes: Routes = [
   {
