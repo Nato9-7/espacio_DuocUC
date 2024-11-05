@@ -5,51 +5,37 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Administrar</ion-title>
-    </ion-toolbar>
+  <ion-item>
+    <ion-label position="floating">ID del Usuario</ion-label>
+    <ion-input type="number" [(ngModel)]="userId" placeholder="Ingrese el ID"></ion-input>
+  </ion-item>
 
-    <ion-item>
-      <ion-label position="floating">ID del Usuario</ion-label>
-      <ion-input type="number" [(ngModel)]="userId" placeholder="Ingrese el ID"></ion-input>
+  <ion-button expand="full" color="primary" (click)="buscarUsuario(userId)">
+    Buscar Usuario
+  </ion-button>
+
+  <ion-card *ngIf="nombreUsuario">
+    <ion-card-header>
+      <ion-card-title>Usuario Encontrado</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <p>Nombre: {{ nombreUsuario }}</p>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-list *ngIf="penalizaciones.length > 0; else noPenalizaciones">
+    <ion-item *ngFor="let penalizacion of penalizaciones">
+      <ion-label>
+        <h2>Pen. Nro: #{{ penalizacion.id_penalizacion }}</h2>
+        <p>Descripción: {{ penalizacion.Descripcion }}</p>
+      </ion-label>
+      <ion-button slot="end" color="danger" (click)="eliminarPenalizacion(penalizacion.id_penalizacion)">
+        <ion-icon name="trash"></ion-icon>
+      </ion-button>
     </ion-item>
+  </ion-list>
 
-    <ion-button expand="full" color="primary" (click)="buscarUsuario(userId)">
-      Buscar Usuario
-    </ion-button>
-    
-    <ion-card *ngIf="nombreUsuario">
-      <ion-card-header>
-        <ion-card-title>Usuario Encontrado</ion-card-title>
-      </ion-card-header>
-      <ion-card-content>
-        <p>Nombre: {{ nombreUsuario }}</p>
-      </ion-card-content>
-    </ion-card>
-    <ion-button *ngIf="nombreUsuario" expand="full" routerLink="/penalizacion" color="secondary">
-      Ir a Penalizacion
-    </ion-button>
-  
-    <ng-template #noUsuarios>
-      <p>No hay usuarios disponibles.</p>
-    </ng-template>
-
-    <ion-list *ngIf="penalizaciones.length > 0; else noPenalizaciones">    
-      <ion-item *ngFor="let penalizacion of penalizaciones">        
-        <ion-label>            
-          <h2>Pen. Nro: #{{ penalizacion.IdPenalizacion }}</h2>            
-          <p>Fecha: {{ penalizacion.fecha | date:'yyyy-MM-dd' }}</p>            
-          <p>Estado: {{ penalizacion.descripcion }}</p>        
-        </ion-label>        
-        <ion-button slot="end" color="danger" (click)="eliminarPenalizacion(penalizacion.IdPenalizacion)">            
-          <ion-icon name="trash"></ion-icon>        
-        </ion-button>  
-      </ion-item>  
-    </ion-list>
-
-    <ng-template #noPenalizaciones>
-      <p>El usuario no tiene penalizaciones.</p>
-    </ng-template>
-  </ion-header>
+  <ng-template #noPenalizaciones>
+    <p>El usuario no tiene penalizaciones.</p>
+  </ng-template>
 </ion-content>

@@ -5,7 +5,6 @@ const usuarioRoutes = require('./rutas/rutaUsuario'); // Importar las rutas de u
 const reservaRoutes = require('./rutas/rutaReserva');
 const penalizacionRoutes = require('./rutas/rutaPenalizacion');
 
-
 app.use(cors({
   origin: 'http://localhost:8100',
   methods: ['GET', 'POST', 'DELETE', 'PUT'],
@@ -15,6 +14,7 @@ app.use(cors({
 app.use(express.json());
 app.use('/reserva', reservaRoutes);
 app.use('/penalizacion', penalizacionRoutes);
+app.use('/usuario', usuarioRoutes); // Cambiado a app.use
 
 // Configurar la conexión a la base de datos
 const db = require('./config/db'); // Conexión a la base de datos

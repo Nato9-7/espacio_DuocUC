@@ -1,16 +1,18 @@
-// Controlador de usuario
+const Usuario = require('../modelo/modeloUsuario');
 
-exports.obtenerUsuarios = (req, res) => {
-    // Aquí va la lógica para obtener los usuarios de la base de datos
-    const sql = 'SELECT * FROM usuario';
-  
-    db.query(sql, (err, results) => {
-      if (err) {
-        console.error('Error al obtener usuarios:', err);
-        return res.status(500).send('Error en el servidor');
-      }
-  
-      res.json(results);  // Envía los resultados al cliente
-    });
-  };
-  
+const obtenerUsuario = (req, res) => {
+  const userId = req.params.userId; // Corregido a req.params.userId
+  Usuario.obtenerUsuario(userId, (err, usuario) => {
+    if (err) {
+      return res.status(500).send('Error en el servidor');
+    }
+    if (!usuario) {
+      return res.status(404).send('Usuario no encontrado');
+    }
+    res.status(200).json(usuario);
+  });
+};
+
+module.exports = {
+  obtenerUsuario,
+};
