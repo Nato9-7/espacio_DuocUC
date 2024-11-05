@@ -1,28 +1,29 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import {
-  BarcodeScanner,
-  BarcodeFormat,
-  LensFacing,
-} from '@capacitor-mlkit/barcode-scanning';
 
 import { DatabaseService } from '../services/database.service';
+import { Barcode, BarcodeScanner } from '@capacitor-mlkit/barcode-scanning';
+import { AlertController } from '@ionic/angular';
 
 @Component({
   selector: 'app-inicio',
   templateUrl: './inicio.page.html',
   styleUrls: ['./inicio.page.scss'],
 })
-export class InicioPage implements OnInit {
+export class InicioPage  {
   reservas: any[] = [];
   esAdmin: boolean = false;
   reservaIdParaConfirmar!: number ; 
 
-  constructor(private http: HttpClient, private database : DatabaseService) {}
+  isSupported = false;
+  barcodes: Barcode[] = [];
+  constructor(private http: HttpClient, private database : DatabaseService, private alertController: AlertController) {}
 
-  ngOnInit() {
+  ionViewWillEnter() {
     this.obtenerReservas();
-    this.checkCameraPermissions(); // Verificar permisos al iniciar
+    BarcodeScanner.isSupported().then((result) => {
+      this.isSupported = result.supported;
+    });
   }
 
   // obtenerReservas() {
@@ -106,51 +107,61 @@ export class InicioPage implements OnInit {
   // }
 
   async obtenerReservas() {
-    const userId = Number(localStorage.getItem('userId')); // Asegúrate de que userId es un número
-
+    const userId = Number(localStorage.getItem('userId'));
+    console.log('este es el id usuario de inicio', localStorage.getItem('userId'));
+  
     if (!isNaN(userId)) {
-      const reservas = await this.database.getReservasByUserId(userId); // Método que debes implementar en DatabaseService
-      this.reservas = reservas.filter((reserva: any) => reserva.estado === 1); // Filtrar reservas activas
-      console.log('Reservas del usuario:', this.reservas);
+      try {
+        const reservas = await this.database.getReservasByUserId(userId);
+        this.reservas = reservas.filter((reserva: any) => reserva.estado === 1);
+        console.log('Reservas del usuario:', JSON.stringify(this.reservas));
+      } catch (error) {
+        console.error('Error al obtener reservas:', error);
+      }
     } else {
       console.log("No hay un usuario autenticado.");
     }
   }
 
-  async checkCameraPermissions() {
-    const { camera } = await BarcodeScanner.checkPermissions();
-    if (camera !== 'granted') {
-      await BarcodeScanner.requestPermissions();
+  async scan(reservaId: number): Promise<void> {
+    const granted = await this.requestPermissions();
+    if (!granted) {
+      this.presentAlert();
+      return;
+    }
+    const { barcodes } = await BarcodeScanner.scan();
+    this.barcodes.push(...barcodes);
+
+
+    // Verifica si el primer código escaneado contiene el mensaje "confirmado"
+    if (barcodes.length > 0) {
+      const scannedValue = barcodes[0].rawValue; // Obtiene el valor escaneado
+      if (scannedValue === 'Confirmación de reserva') {
+        this.confirmarReserva(reservaId); // Llama a la función para confirmar la reserva
+      } else {
+        // Opcional: maneja el caso donde el valor escaneado no es "confirmado"
+        console.log('El código escaneado no es válido:', scannedValue);
+      }
     }
   }
 
-  async startScan(reservaId: number) {
-    this.reservaIdParaConfirmar = reservaId; // Almacena el ID de reserva a confirmar
-    const listener = await BarcodeScanner.addListener('barcodeScanned', (result) => {
-      console.log('Barcode scanned:', result.barcode);
-
-      const reservaIdString = result.barcode.rawValue; // Ajusta según tu estructura
-      const reservaId = Number(reservaIdString);
-
-      if (!isNaN(reservaId)) {
-        this.stopScan(); // Detener el escáner después de escanear
-        this.confirmarReserva(this.reservaIdParaConfirmar); // Confirma la reserva almacenada
-      } else {
-        alert('El ID de la reserva escaneado no es un número válido.');
-      }
-    });
-
-    await BarcodeScanner.startScan();
+  async requestPermissions(): Promise<boolean> {
+    const { camera } = await BarcodeScanner.requestPermissions();
+    return camera === 'granted' || camera === 'limited';
   }
 
-  async stopScan() {
-    await BarcodeScanner.stopScan();
-    await BarcodeScanner.removeAllListeners(); // Remover listeners
+  async presentAlert(): Promise<void> {
+    const alert = await this.alertController.create({
+      header: 'Permission denied',
+      message: 'Please grant camera permission to use the barcode scanner.',
+      buttons: ['OK'],
+    });
+    await alert.present();
   }
 
   cancelarReserva(reservaId: number) {
     if (confirm('¿Estás seguro de que deseas cancelar esta reserva?')) {
-      this.database.cancelarReserva(reservaId) // Método que debes implementar en DatabaseService
+      this.database.cancelarReserva(reservaId) 
         .then(response => {
           console.log('Reserva cancelada:', response);
           this.obtenerReservas(); // Actualiza la lista de reservas
@@ -174,4 +185,10 @@ export class InicioPage implements OnInit {
         alert('Error al confirmar la reserva');
       });
   }
+
+  eliminarTodo(){
+    this.database.eliminarTodasLasReservas();
+  }
+
+
 }

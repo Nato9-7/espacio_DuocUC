@@ -1,6 +1,9 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>Reservas</ion-title>
+    <ion-buttons slot="end">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
@@ -11,9 +14,20 @@
     </ion-toolbar>
   </ion-header>
 
-  <ion-button expand="block" shape="round">
-    Hacer reserva
-  </ion-button>
+  <form (submit)="onSubmit()">
+    <ion-item>
+      <ion-label position="floating">Fecha</ion-label>
+      <ion-datetime displayFormat="YYYY-MM-DD" [(ngModel)]="fecha" name="fecha" required></ion-datetime>
+    </ion-item>
 
- 
+    <ion-item>
+      <ion-label position="floating">Sala</ion-label>
+      <ion-select [(ngModel)]="sala" name="sala" required>
+        <ion-select-option value="1">Biblioteca</ion-select-option>
+        <ion-select-option value="2">Gimnasio</ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-button expand="full" type="submit" color="primary">Agregar Reserva</ion-button>
+  </form>
 </ion-content>
