@@ -70,7 +70,7 @@ export class LoginPage {
       if (user) {
         localStorage.setItem('userId', user.id.toString());
         console.log("Usuario autenticado:", user);
-  
+        
         this.navCtrl.navigateRoot('/inicio');
       } else {
         alert('Correo o contraseña incorrectos');

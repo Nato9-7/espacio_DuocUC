@@ -5,7 +5,7 @@ const obtenerPenalizaciones = (req, res) => {
   Penalizacion.obtenerPorUsuario(userId, (err, result) => {
     if (err) return res.status(500).send({ error: 'Error en el servidor' });
     if (result.length > 0) return res.status(200).json(result);
-    return res.status(404).send({ message: 'No existen Penalizacions' });
+    return res.status(404).send({ message: 'No existen Penalizaciones' });
   });
 };
 

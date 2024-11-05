@@ -1,8 +1,8 @@
 const db = require('../config/db');
 
 const Penalizacion = {
-   obtenerPorUsuario: (userId, callback) => {
-    const query = 'SELECT * FROM PENALIZACION WHERE ID_USUARIO = ?';
+  obtenerPorUsuario: (userId, callback) => {
+    const query = 'SELECT * FROM PENALIZACION WHERE Usuario_Id_usuario = ?'; // Cambiar ID_USUARIO a Usuario_Id_usuario
     db.query(query, [userId], (err, results) => {
       if (err) {
         console.error('Error al obtener penalizaciones:', err);
@@ -13,11 +13,11 @@ const Penalizacion = {
     });
   },
   crear: (penalizacionData, callback) => {
-    const query = 'INSERT INTO PENALIZACION (Descripcion, id_Usuario, fecha_Penalizacion) VALUES (?, ?, ?)';
+    const query = 'INSERT INTO PENALIZACION (Descripcion, Usuario_Id_usuario, fecha_Penalizacion) VALUES (?, ?, ?)';
     db.query(query, [penalizacionData.Descripcion, penalizacionData.id_Usuario, penalizacionData.FechaPenalizacion], callback);
   },
   cancelar: (idPenalizacion, callback) => {
-    const query = 'DELETE FROM PENALIZACION WHERE Id_Penalizacion = ?';
+    const query = 'DELETE FROM PENALIZACION WHERE id_penalizacion = ?'; // Asegúrate que el nombre de columna esté correcto
     db.query(query, [idPenalizacion], callback);
   },
 };

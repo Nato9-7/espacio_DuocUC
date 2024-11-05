@@ -1,5 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const db = require('../config/db'); // Asegúrate de tener tu conexión a la base de datos aquí
+const usuarioController = require('../controlador/controladorUsuario');
+
+router.get('/:userId', usuarioController.obtenerUsuario);
 
 module.exports = router;
