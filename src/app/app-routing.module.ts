@@ -10,7 +10,7 @@ const routes: Routes = [
   },
   {
     path: 'login',
-    loadChildren: () => import('./login/login.module').then( m => m.LoginPageModule)
+    loadChildren: () => import('./login/login.module').then(m => m.LoginPageModule)
   },
   {
     path: 'inicio',
@@ -18,19 +18,20 @@ const routes: Routes = [
   },
   {
     path: 'reservas',
-    loadChildren: () => import('./reservas/reservas.module').then( m => m.ReservasPageModule)
+    loadChildren: () => import('./reservas/reservas.module').then(m => m.ReservasPageModule)
   },
   {
     path: 'administrar',
-    loadChildren: () => import('./administrar/administrar.module').then( m => m.AdministrarPageModule)
+    loadChildren: () => import('./administrar/administrar.module').then(m => m.AdministrarPageModule)
   },
   {
     path: 'historial-reservas',
-    loadChildren: () => import('./historial-reservas/historial-reservas.module').then( m => m.HistorialReservasPageModule)
+    loadChildren: () => import('./historial-reservas/historial-reservas.module').then(m => m.HistorialReservasPageModule)
+  },
+  {
+    path: 'agregar-penalizacion/:userId',
+    loadChildren: () => import('./agregar-penalizacion/agregar-penalizacion.module').then(m => m.AgregarPenalizacionPageModule)
   }
-
-
-
 ];
 
 @NgModule({

@@ -1,5 +1,7 @@
+import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
+import { NavController } from '@ionic/angular'; // Importa NavController
 
 @Component({
   selector: 'app-administrar',
@@ -8,11 +10,11 @@ import { Component, OnInit } from '@angular/core';
 })
 export class AdministrarPage implements OnInit {
 
-  nombreUsuario: string | null = null; // Para almacenar el nombre del usuario encontrado
-  penalizaciones: any[] = []; // Arreglo para almacenar las penalizaciones
-  userId!: number; // ID del usuario a buscar
+  nombreUsuario: string | null = null;
+  penalizaciones: any[] = [];
+  userId!: number;
   
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private navCtrl: NavController, private router: Router) { }
 
   ngOnInit() { }
 
@@ -22,40 +24,36 @@ export class AdministrarPage implements OnInit {
       return;
     }
 
-    // Llama a la API para buscar el usuario
     this.http.get(`http://localhost:3000/usuario/${userId}`).subscribe(
       (response: any) => {
         console.log('Usuario encontrado:', response);
-        this.nombreUsuario = response.nombre; // Asigna el nombre del usuario encontrado
-        this.obtenerPenalizaciones(userId); // Llama a obtener penalizaciones para el usuario
+        this.nombreUsuario = response.Nombre;
+        console.log(response.Nombre);
+        this.obtenerPenalizaciones(userId);
       },
       (error) => {
         console.error('Error al buscar usuario:', error);
-        alert('Usuario no encontrado.'); // Mensaje si no se encuentra el usuario
-        this.nombreUsuario = null; // Resetea el nombre de usuario
-        this.penalizaciones = []; // Limpia las penalizaciones
+        alert('Usuario no encontrado.');
+        this.nombreUsuario = null;
+        this.penalizaciones = [];
       }
     );
   }
 
   obtenerPenalizaciones(userId: number) {
-    // Obtiene las penalizaciones del usuario
     this.http.get(`http://localhost:3000/penalizacion/${userId}`).subscribe(
       (response: any) => {
         console.log('Penalizaciones del usuario:', response);
+        this.penalizaciones = response;
         
-        // Si no hay penalizaciones, se limpia el arreglo
-        if (response.length === 0) {
-          this.penalizaciones = []; // Se asigna un arreglo vacío
-        } else {
-          this.penalizaciones = response; // Asigna todas las penalizaciones
+        if (this.penalizaciones.length === 0) {
+          this.penalizaciones = [{ mensaje: 'El usuario no tiene penalizaciones.' }];
         }
       },
       (error) => {
         console.error('Error al obtener penalizaciones:', error);
         if (error.status === 404) {
-          console.log("No existen penalizaciones");
-          this.penalizaciones = []; // Asegúrate de que esté vacío
+          this.penalizaciones = [{ mensaje: 'El usuario no tiene penalizaciones.' }];
         } else {
           alert('Error en el servidor.');
         }
@@ -64,11 +62,9 @@ export class AdministrarPage implements OnInit {
   }
 
   eliminarPenalizacion(idPenalizacion: number) {
-    // Elimina una penalización por ID
     this.http.delete(`http://localhost:3000/penalizacion/${idPenalizacion}`).subscribe(
       () => {
         console.log(`Penalización con ID ${idPenalizacion} eliminada`);
-        // Filtra la penalización eliminada del arreglo
         this.penalizaciones = this.penalizaciones.filter(
           penalizacion => penalizacion.id_penalizacion !== idPenalizacion
         );
@@ -78,5 +74,13 @@ export class AdministrarPage implements OnInit {
         alert('Error al eliminar la penalización.');
       }
     );
+  }
+
+  irAgregarPenalizacion() {
+    if (!this.userId) {
+      alert('Por favor, busca un usuario primero.');
+      return;
+    }
+    this.router.navigate([`/agregar-penalizacion`, this.userId]);
   }
 }

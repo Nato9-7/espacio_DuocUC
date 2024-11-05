@@ -14,6 +14,10 @@
     Buscar Usuario
   </ion-button>
 
+  <ion-button expand="full" color="secondary" (click)="irAgregarPenalizacion()" *ngIf="nombreUsuario">
+    Agregar Penalización
+  </ion-button>
+
   <ion-card *ngIf="nombreUsuario">
     <ion-card-header>
       <ion-card-title>Usuario Encontrado</ion-card-title>
@@ -27,7 +31,7 @@
     <ion-item *ngFor="let penalizacion of penalizaciones">
       <ion-label>
         <h2>Pen. Nro: #{{ penalizacion.id_penalizacion }}</h2>
-        <p>Descripción: {{ penalizacion.Descripcion }}</p>
+        <p>Estado: {{ penalizacion.descripcion }}</p>
       </ion-label>
       <ion-button slot="end" color="danger" (click)="eliminarPenalizacion(penalizacion.id_penalizacion)">
         <ion-icon name="trash"></ion-icon>
