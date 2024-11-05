@@ -11,8 +11,14 @@ const obtenerPenalizaciones = (req, res) => {
 
 const crearPenalizacion = (req, res) => {
   const PenalizacionData = req.body;
+
+  console.log('Datos de penalización recibidos:', PenalizacionData);
+
   Penalizacion.crear(PenalizacionData, (err, result) => {
-    if (err) return res.status(500).send({ error: 'Error al crear la Penalizacion' });
+    if (err) {
+      console.error('Error al crear la penalización:', err);
+      return res.status(500).send({ error: 'Error al crear la Penalizacion' });
+    }
     return res.status(200).send({ message: 'Penalizacion creada exitosamente' });
   });
 };
