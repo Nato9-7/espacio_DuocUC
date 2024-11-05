@@ -68,13 +68,7 @@ export class DatabaseService {
       localStorage.setItem('userId', this.num.toString());
     }
 
-      // Verifica si hay reservas y, si no, crea una reserva inicial
-    const reservasResult = await this.db.query('SELECT * FROM reservas;');
-    if (!reservasResult.values || reservasResult.values.length === 0) {
-      // Crea una reserva inicial (por ejemplo, para el día de hoy)
-      const today = new Date().toISOString().split('T')[0]; // Obtiene la fecha actual en formato YYYY-MM-DD
-      await this.addReserva(today, 1, 1, 1); // Cambia el usuario_id a la ID del usuario que debería tener la reserva
-    }
+     
 
     await this.loadUsers(); // Carga los usuarios después de inicializar
     return true;
