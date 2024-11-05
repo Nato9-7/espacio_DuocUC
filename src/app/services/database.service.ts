@@ -19,6 +19,8 @@ export class DatabaseService {
   private db!: SQLiteDBConnection;
   private users: WritableSignal<User[]> = signal<User[]>([]);
 
+  num: number = 1;
+
   constructor() { }
 
   // Inicializa la base de datos y crea la tabla si no existe
@@ -63,6 +65,7 @@ export class DatabaseService {
     const result = await this.db.query('SELECT * FROM usuarios WHERE isAdmin = 1;');
     if (!result.values || result.values.length === 0) {
       await this.addUser('admin', 'admin@example.com', 'admin1234', 1, 1); // Crea usuario admin si no existe
+      localStorage.setItem('userId', this.num.toString());
     }
 
       // Verifica si hay reservas y, si no, crea una reserva inicial
@@ -144,7 +147,7 @@ async cancelarReserva(reservaId: number): Promise<void> {
 
 // Método para confirmar una reserva
 async confirmarReserva(reservaId: number): Promise<void> {
-  const query = `UPDATE reservas SET estado = 1 WHERE id = ?;`; // Cambia el estado a 1 (confirmado)
+  const query = `UPDATE reservas SET estado = 2 WHERE id = ?;`; // Cambia el estado a 2 (confirmado)
   await this.db.run(query, [reservaId]);
 }
 
@@ -153,6 +156,17 @@ async addReserva(fecha: string, sala: number, estado: number, userId: number) {
   const query = `INSERT INTO reservas (fecha, sala, estado, userId) VALUES (?, ?, ?, ?);`;
   const values = [fecha, sala, estado, userId];
   await this.db.run(query, values);
+}
+
+async eliminarTodasLasReservas(): Promise<void> {
+  const query = `DELETE FROM reservas;`;
+  try {
+    await this.db.run(query);
+    console.log('Todas las reservas han sido eliminadas.');
+  } catch (error) {
+    console.error('Error al eliminar todas las reservas:', error);
+    throw error;
+  }
 }
 
   

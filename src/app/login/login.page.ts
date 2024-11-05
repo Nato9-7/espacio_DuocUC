@@ -68,7 +68,7 @@ export class LoginPage {
       const user = await this.database.validateUser(loginData.correo, loginData.password);
   
       if (user) {
-        localStorage.setItem('userId', user.id.toString());
+  
         console.log("Usuario autenticado:", user);
   
         this.navCtrl.navigateRoot('/inicio');
