@@ -57,13 +57,14 @@ export class HistorialReservasPage implements OnInit {
     const userId = Number(localStorage.getItem('userId')); // Asegúrate de que userId es un número
 
     if (!isNaN(userId)) {
-      const reservas = await this.database.getReservasByUserId(userId); // Método que debes implementar en DatabaseService
-      this.reservas = reservas.filter((reserva: any) => reserva.estado === 2 && reserva.estado === 3 ); // Filtrar reservas activas
+      const reservas = await this.database.getReservasByUserId(userId); 
+      // Filtrar para incluir estados 2 y 3
+      this.reservas = reservas.filter((reserva: any) => reserva.estado === 2 || reserva.estado === 3); 
       console.log('Reservas del usuario:', this.reservas);
     } else {
       console.log("No hay un usuario autenticado.");
     }
-  }
+}
 
   loadData(event: any) {
     this.page++;

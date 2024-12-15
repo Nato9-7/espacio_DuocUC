@@ -2,7 +2,7 @@ import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { NavController } from '@ionic/angular'; // Importa NavController
-
+import { DatabaseService } from '../services/database.service';
 @Component({
   selector: 'app-administrar',
   templateUrl: './administrar.page.html',
@@ -13,68 +13,51 @@ export class AdministrarPage implements OnInit {
   nombreUsuario: string | null = null;
   penalizaciones: any[] = [];
   userId!: number;
-  
-  constructor(private http: HttpClient, private navCtrl: NavController, private router: Router) { }
+  alertController: any;
+  reservas: any[] = [];
+
+  constructor(
+    private http: HttpClient, 
+    private navCtrl: NavController, 
+    private router: Router, 
+    private database: DatabaseService) { }
 
   ngOnInit() { }
 
-  buscarUsuario(userId: number) {
-    if (!userId) {
-      alert('Por favor, ingresa un ID de usuario.');
-      return;
+   async obtenerUser() {
+    if (this.userId !== null) { // Verifica si userId no es nulo
+      const usuario = await this.database.getUserById(this.userId); // Llama a la base de datos con userId
+  
+      if (usuario) {
+        alert('Usuario encontrado');
+        console.log('usuario encontrado', usuario.id);
+        this.obtenerReservas(usuario.id);
+      } else {
+        alert('Usuario no encontrado');
+      }
+    } else {
+      console.log("ID del usuario no válido.");
     }
-
-    this.http.get(`http://localhost:3000/usuario/${userId}`).subscribe(
-      (response: any) => {
-        console.log('Usuario encontrado:', response);
-        this.nombreUsuario = response.Nombre;
-        console.log(response.Nombre);
-        this.obtenerPenalizaciones(userId);
-      },
-      (error) => {
-        console.error('Error al buscar usuario:', error);
-        alert('Usuario no encontrado.');
-        this.nombreUsuario = null;
-        this.penalizaciones = [];
+  }
+  
+  
+  async obtenerReservas(usuario: number) {
+    
+    console.log('UsuarioObtenido', usuario);
+  
+    if (!isNaN(usuario)) {
+      try {
+        const reservas = await this.database.getReservasByUserId(usuario);
+        this.reservas = reservas.filter((reserva: any) => reserva.estado === 3);
+        console.log('Reservas del usuario:', JSON.stringify(this.reservas));
+      } catch (error) {
+        console.error('Error al obtener reservas:', error);
       }
-    );
+    } else {
+      console.log("No hay un usuario autenticado.");
+    }
   }
 
-  obtenerPenalizaciones(userId: number) {
-    this.http.get(`http://localhost:3000/penalizacion/${userId}`).subscribe(
-      (response: any) => {
-        console.log('Penalizaciones del usuario:', response);
-        this.penalizaciones = response;
-        
-        if (this.penalizaciones.length === 0) {
-          this.penalizaciones = [{ mensaje: 'El usuario no tiene penalizaciones.' }];
-        }
-      },
-      (error) => {
-        console.error('Error al obtener penalizaciones:', error);
-        if (error.status === 404) {
-          this.penalizaciones = [{ mensaje: 'El usuario no tiene penalizaciones.' }];
-        } else {
-          alert('Error en el servidor.');
-        }
-      }
-    );
-  }
-
-  eliminarPenalizacion(idPenalizacion: number) {
-    this.http.delete(`http://localhost:3000/penalizacion/${idPenalizacion}`).subscribe(
-      () => {
-        console.log(`Penalización con ID ${idPenalizacion} eliminada`);
-        this.penalizaciones = this.penalizaciones.filter(
-          penalizacion => penalizacion.id_penalizacion !== idPenalizacion
-        );
-      },
-      (error) => {
-        console.error('Error al eliminar penalización:', error);
-        alert('Error al eliminar la penalización.');
-      }
-    );
-  }
 
   irAgregarPenalizacion() {
     if (!this.userId) {

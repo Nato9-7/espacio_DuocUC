@@ -1,5 +1,5 @@
 <ion-header>
-  <ion-toolbar>
+  <ion-toolbar color="black">
     <ion-title>Inicio</ion-title>
     <ion-buttons slot="end">
       <ion-menu-button></ion-menu-button>
@@ -23,6 +23,7 @@
         <h2>Reserva Nro: {{ reserva.id }}</h2>
         <p>Fecha: {{ reserva.fecha | date:'yyyy-MM-dd' }}</p>
         <p>Estado: {{ reserva.estado === 1 ? 'Activa' : reserva.estado === 3 ? 'Cancelada' : 'Desconocido' }}</p>
+        <p>Sala: {{ reserva.sala}} </p>
       </ion-label>
 
       <ion-button slot="end" color="success" (click)="scan(reserva.id)">
@@ -33,13 +34,13 @@
         <ion-icon name="trash"></ion-icon>
       </ion-button>
     </ion-item>
+    <ion-button color="#FFB803" (click)="eliminarTodo()">
+      <ion-label>Eliminar Todas las Reservas</ion-label>
+    </ion-button>
   </ion-list>
 
   <ng-template #noReservas>
     <p>No hay reservas pendientes.</p>
-    <ion-button (click)="obtenerReservas()">Recargar</ion-button>
-    <ion-button (click)="eliminarTodo()">
-      <ion-label>Eliminar Todas las Reservas</ion-label>
-    </ion-button>
+    <ion-button color="#FFB803" (click)="obtenerReservas()">Recargar</ion-button>
   </ng-template>
 </ion-content>

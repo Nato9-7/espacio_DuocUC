@@ -19,7 +19,8 @@ export class DatabaseService {
   private db!: SQLiteDBConnection;
   private users: WritableSignal<User[]> = signal<User[]>([]);
 
-  num: number = 1;
+  numAdmin: number = 1;
+  numUser: number = 0;
 
   constructor() { }
 
@@ -50,26 +51,49 @@ export class DatabaseService {
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         userId INTEGER,
         fecha TEXT,
-        sala TEXT,
+        sala NUMBER,
         estado INTEGER,
         FOREIGN KEY (userId) REFERENCES usuarios(id) ON DELETE CASCADE
       );
     `;
 
+    const queryPenalizacion = `
+      CREATE TABLE IF NOT EXISTS penalizacion (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        userId INTEGER,
+        fecha TEXT,
+        descripcion TEXT,
+        FOREIGN KEY (userId) REFERENCES usuarios(id) ON DELETE CASCADE);`
+    ;
+
+    const querySalasOcupadas = `
+      CREATE TABLE IF NOT EXISTS salas_ocupadas (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      fecha TEXT,
+      sala NUMBER,
+      hora TEXT);`
+    ;
+
       // Ejecuta las consultas para crear las tablas
     await this.db.execute(queryUsuarios);
     await this.db.execute(queryReservas);
+    await this.db.execute(queryPenalizacion);
+    await this.db.execute(querySalasOcupadas);
 
 
     // Verifica si existe un usuario admin y, si no, lo crea
     const result = await this.db.query('SELECT * FROM usuarios WHERE isAdmin = 1;');
     if (!result.values || result.values.length === 0) {
       await this.addUser('admin', 'admin@example.com', 'admin1234', 1, 1); // Crea usuario admin si no existe
-      localStorage.setItem('userId', this.num.toString());
+      
     }
 
-     
-
+    const resultUser = await this.db.query('SELECT * FROM usuarios WHERE isAdmin = 0;');
+    if (!resultUser.values || resultUser.values.length === 0){
+      await this.addUser('user', 'user@example.com', 'user1234', 1, 0);
+      
+    }
+    
     await this.loadUsers(); // Carga los usuarios después de inicializar
     return true;
   }
@@ -154,8 +178,10 @@ async addReserva(fecha: string, sala: number, estado: number, userId: number) {
 
 async eliminarTodasLasReservas(): Promise<void> {
   const query = `DELETE FROM reservas;`;
+  const query2 = `DELETE FROM salas_ocupadas;`
   try {
     await this.db.run(query);
+    await this.db.run(query2);
     console.log('Todas las reservas han sido eliminadas.');
   } catch (error) {
     console.error('Error al eliminar todas las reservas:', error);
@@ -163,7 +189,40 @@ async eliminarTodasLasReservas(): Promise<void> {
   }
 }
 
-  
+async reservas(): Promise<void>{
+  const query = `SELECT * FROM RESERVAS;`
+  try {
+    await this.db.run(query);
+    console.log("RESERVAS OBTENIDAS")
+  } catch (error) {
+    console.error("ERROR AL OBTENER RESERVAS");
+    throw error;
+  }
+}
+
+// Método para agregar una sala ocupada
+async addSalaOcupada(fecha: string, sala: number, hora: string): Promise<void> {
+  const query = `INSERT INTO salas_ocupadas (fecha, sala, hora) VALUES (?, ?, ?);`;
+  const values = [fecha, sala, hora];
+  await this.db.run(query, values);
+}
+
+async obtenerSalaOcupada(fecha: string, sala: number, hora: string){
+  // Asumiendo que tienes las variables: fecha, salaId, hora
+  const result = await this.db.query('SELECT * FROM salas_ocupadas WHERE fecha = ? AND sala = ? AND hora = ?', [fecha, sala, hora]);
+  const resultados = result.values || [];
+
+  if (resultados.length === 0) {
+    console.log("No se encontraron resultados.");
+    return false;
+    // Lógica adicional cuando no hay resultados
+  } else {
+    console.log("Resultados encontrados:", resultados);
+    return true;
+    // Lógica para cuando hay resultados
+  }
+}
+
 }
 
 
