@@ -1,5 +1,5 @@
 <ion-header [translucent]="true">
-  <ion-toolbar>
+  <ion-toolbar color="black">
     <ion-title>Reservas</ion-title>
     <ion-buttons slot="end">
       <ion-menu-button></ion-menu-button>
@@ -17,17 +17,35 @@
   <form (submit)="onSubmit()">
     <ion-item>
       <ion-label position="floating">Fecha</ion-label>
-      <ion-datetime displayFormat="YYYY-MM-DD" [(ngModel)]="fecha" name="fecha" required></ion-datetime>
+      <ion-datetime  presentation="date" displayFormat="YYYY-MM-DD" [(ngModel)]="fecha" [min]="minFecha" name="fecha" required></ion-datetime>
     </ion-item>
 
     <ion-item>
-      <ion-label position="floating">Sala</ion-label>
+      <ion-label position="floating">Lugar</ion-label>
       <ion-select [(ngModel)]="sala" name="sala" required>
         <ion-select-option value="1">Biblioteca</ion-select-option>
         <ion-select-option value="2">Gimnasio</ion-select-option>
       </ion-select>
     </ion-item>
 
-    <ion-button expand="full" type="submit" color="primary">Agregar Reserva</ion-button>
+    <!-- Tabla de selección de horarios -->
+    <div class="schedule-table">
+      <ion-grid>
+        <ion-row>
+          <ion-col *ngFor="let slot of horarios" size="3">
+            <ion-button
+              [color]="selectedSlot === slot ? '#FFB803' : 'light'"
+              (click)="selectSlot(slot)"
+              expand="block"
+              size="small"
+            >
+              {{ slot }}
+            </ion-button>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </div>
+
+    <ion-button expand="full" type="submit" color="#FFB803">Agregar Reserva</ion-button>
   </form>
 </ion-content>

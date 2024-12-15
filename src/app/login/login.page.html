@@ -1,16 +1,15 @@
 <ion-header>
-  <ion-toolbar color="primary">
+  <ion-toolbar color="black">
     <ion-title>Login Duoc UC</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="ion-padding">
   <ion-card>
-    <ion-card-header>
+    <ion-card-header color="">
       <ion-card-title>Iniciar Sesión</ion-card-title>
     </ion-card-header>
 
-    <ion-button routerLink="/inicio">prueba</ion-button>
     <ion-card-content>
       <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
         <ion-item>
@@ -23,14 +22,10 @@
           <ion-input type="password"  formControlName="password" required></ion-input>
         </ion-item>
 
-        <ion-button  expand="full" type="submit" [disabled]="!loginForm.valid">Entrar</ion-button>
+        <ion-button  expand="full" type="submit" [disabled]="!loginForm.valid" color="#FFB803">Entrar</ion-button>
       </form>
     </ion-card-content>
   </ion-card>
 
-  <ion-footer>
-    <ion-toolbar color="light">
-      <ion-title>¿Olvidaste tu contraseña?</ion-title>
-    </ion-toolbar>
-  </ion-footer>
+ 
 </ion-content>
