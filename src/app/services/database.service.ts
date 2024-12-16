@@ -6,6 +6,7 @@ const DB_USERS = 'espacio_DuocUC';
 export interface User {
   id: number;
   name: string;
+  rut: string;
   email: string;
   password: string;
   active: number;
@@ -35,10 +36,12 @@ export class DatabaseService {
     );
 
     await this.db.open();
+
     const queryUsuarios = `
     CREATE TABLE IF NOT EXISTS usuarios (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       name TEXT,
+      rut TEXT,
       email TEXT,
       password TEXT,
       active INTEGER,
@@ -84,13 +87,13 @@ export class DatabaseService {
     // Verifica si existe un usuario admin y, si no, lo crea
     const result = await this.db.query('SELECT * FROM usuarios WHERE isAdmin = 1;');
     if (!result.values || result.values.length === 0) {
-      await this.addUser('admin', 'admin@example.com', 'admin1234', 1, 1); // Crea usuario admin si no existe
+      await this.addUser('admin', '12345678-9', 'admin@example.com', 'admin1234', 1, 1); // Crea usuario admin si no existe
       
     }
 
     const resultUser = await this.db.query('SELECT * FROM usuarios WHERE isAdmin = 0;');
     if (!resultUser.values || resultUser.values.length === 0){
-      await this.addUser('user', 'user@example.com', 'user1234', 1, 0);
+      await this.addUser('user', '23456789-0', 'user@example.com', 'user1234', 1, 0);
       
     }
     
@@ -110,9 +113,9 @@ export class DatabaseService {
   }
 
   // Crear un nuevo usuario
-  async addUser(name: string, email: string, password: string, active: number = 1, isAdmin: number = 0) {
-    const query = `INSERT INTO usuarios (name, email, password, active, isAdmin) VALUES (?, ?, ?, ?, ?);`;
-    const values = [name, email, password, active, isAdmin];
+  async addUser(name: string, rut: string, email: string, password: string, active: number = 1, isAdmin: number = 0) {
+    const query = `INSERT INTO usuarios (name, rut, email, password, active, isAdmin) VALUES (?, ?, ?, ?, ?, ?);`;
+    const values = [name, rut, email, password, active, isAdmin];
     await this.db.run(query, values);
     await this.loadUsers();
   }
@@ -123,10 +126,16 @@ export class DatabaseService {
     return result.values?.[0] as User || null;
   }
 
+  // Leer un usuario específico por su Rut
+  async getUserByRut(rut: string): Promise<User | null> {
+    const result = await this.db.query('SELECT * FROM usuarios WHERE rut = ?;', [rut]);
+    return result.values?.[0] as User || null;
+  }
+
   // Actualizar un usuario existente
-  async updateUser(id: number, name: string, email: string, password: string, active: number) {
-    const query = `UPDATE usuarios SET name = ?, email = ?, password = ?, active = ? WHERE id = ?;`;
-    const values = [name, email, password, active, id];
+  async updateUser(id: number, name: string, rut: string, email: string, password: string, active: number) {
+    const query = `UPDATE usuarios SET name = ?, rut = ?, email = ?, password = ?, active = ? WHERE id = ?;`;
+    const values = [name, rut, email, password, active, id];
     await this.db.run(query, values);
     await this.loadUsers(); // Recarga los usuarios después de actualizar uno
   }
@@ -222,6 +231,13 @@ async obtenerSalaOcupada(fecha: string, sala: number, hora: string){
     // Lógica para cuando hay resultados
   }
 }
+
+async addPenalizacion(fecha: string, descripcion: string, userId: number) {
+  const query = `INSERT INTO reservas (fecha, descripcion, userId) VALUES (?, ?, ?);`;
+  const values = [fecha, descripcion, userId];
+  await this.db.run(query, values);
+}
+
 
 }
 
