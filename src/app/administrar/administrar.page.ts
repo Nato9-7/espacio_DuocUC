@@ -24,22 +24,24 @@ export class AdministrarPage implements OnInit {
 
   ngOnInit() { }
 
-   async obtenerUser() {
-    if (this.userRut !== null) { // Verifica si userId no es nulo
-      const usuario = await this.database.getUserByRut(this.userRut); // Llama a la base de datos con userId
+  async obtenerUser() {
+    if (this.userRut !== null) { // Verifica si userRut no es nulo
+      const usuario = await this.database.getUserByRut(this.userRut); // Llama a la base de datos con userRut
   
       if (usuario) {
         alert('Usuario encontrado');
-        console.log('usuario encontrado', usuario.rut);
+        console.log('Usuario encontrado:', usuario.rut);
         this.nombreUsuario = usuario.name;
         this.obtenerReservas(usuario.id);
+        this.obtenerPenalizaciones(usuario.id);
       } else {
         alert('Usuario no encontrado');
       }
     } else {
-      console.log("Rut del usuario no válido.");
+      console.log('Rut del usuario no válido.');
     }
   }
+  
   
   
   async obtenerReservas(usuario: number) {
@@ -59,6 +61,16 @@ export class AdministrarPage implements OnInit {
     }
   }
 
+  async obtenerPenalizaciones(userId: number) {
+    try {
+      const penalizaciones = await this.database.getPenalizacionesByUserId(userId);
+      this.penalizaciones = penalizaciones;
+      console.log('Penalizaciones del usuario:', this.penalizaciones);
+    } catch (error) {
+      console.error('Error al obtener penalizaciones:', error);
+    }
+  }
+  
 
   irAgregarPenalizacion() {
     if (!this.userRut) {

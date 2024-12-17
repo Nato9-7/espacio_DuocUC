@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
+import { DatabaseService } from '../services/database.service';
 
 @Component({
   selector: 'app-agregar-penalizacion',
@@ -9,38 +10,38 @@ import { HttpClient } from '@angular/common/http';
 })
 export class AgregarPenalizacionPage implements OnInit {
   userId!: number;
+  fecha!: string;
   descripcion: string = '';
+  minFecha: string = '';
 
   constructor(
     private route: ActivatedRoute,
     private http: HttpClient,
-    private router: Router
+    private router: Router,
+    private database: DatabaseService
   ) {}
 
   ngOnInit() {
     this.userId = +this.route.snapshot.paramMap.get('userId')!; // Obtiene el ID del usuario de la ruta
+    this.setMinFecha();
   }
 
-  confirmarPenalizacion() {
-    if (!this.descripcion) {
-      alert('Por favor, ingresa una descripción.');
-      return;
+  setMinFecha() {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = (today.getMonth() + 1).toString().padStart(2, '0'); // Mes en formato MM
+    const day = today.getDate().toString().padStart(2, '0'); // Día en formato DD
+    this.minFecha = `${year}-${month}-${day}`; // Formato final YYYY-MM-DD
+  }
+
+  async crearPenalizacion() {
+    if (this.userId !== null && this.descripcion !== null && this.fecha !== null) {
+      this.database.addPenalizacion(this.fecha,this.descripcion,this.userId);
+      alert('Penalizacion agregada correctamente');
+    } else {
+      console.log("Rut del usuario no válido.");
+      alert('Error al crear penalizacion');
     }
-
-    const penalizacionData = {
-      Descripcion: this.descripcion,
-      Usuario_Id_usuario: this.userId
-    };
-
-    this.http.post('http://localhost:3000/penalizacion/crear', penalizacionData).subscribe(
-      () => {
-        alert('Penalización agregada exitosamente');
-        this.router.navigate(['/administrar']); // Navega de regreso a la página de administración
-      },
-      (error) => {
-        console.error('Error al agregar penalización:', error);
-        alert('Error al agregar penalización.');
-      }
-    );
+    this.router.navigate([`/administrar`]);
   }
 }

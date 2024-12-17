@@ -233,11 +233,16 @@ async obtenerSalaOcupada(fecha: string, sala: number, hora: string){
 }
 
 async addPenalizacion(fecha: string, descripcion: string, userId: number) {
-  const query = `INSERT INTO reservas (fecha, descripcion, userId) VALUES (?, ?, ?);`;
+  const query = `INSERT INTO penalizacion (fecha, descripcion, userId) VALUES (?, ?, ?);`;
   const values = [fecha, descripcion, userId];
   await this.db.run(query, values);
 }
 
+async getPenalizacionesByUserId(userId: number): Promise<any[]> {
+  const result = await this.db.query('SELECT * FROM penalizacion WHERE userId = ?;', [userId]);
+  console.log(result);
+  return result.values || [];
+}
 
 }
 
